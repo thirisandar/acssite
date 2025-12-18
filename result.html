@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Result</title>
+    <style>
+        /* CSS from text-prompt.html for consistency */
+        :root {
+            --primary-blue: #1E90FF; /* Dodger Blue */
+            --secondary-green: #3CB371; /* Medium Sea Green */
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background-color: #f9f9fb; }
+        .container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            padding: 30px; 
+            background-color: white; 
+            border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); 
+        }
+        h1 { 
+            color: var(--primary-blue); 
+            border-bottom: 2px solid #e0e0e0; 
+            padding-bottom: 10px; 
+            margin-bottom: 20px; 
+        }
+        h3 { 
+            color: var(--secondary-green); 
+            margin-top: 20px; 
+        }
+        pre { 
+            background-color: #333; /* Darker background for code/prompt */
+            color: #E0E0E0;
+            padding: 20px; 
+            border-radius: 6px; 
+            white-space: pre-wrap; 
+            word-break: break-word; 
+            border: 1px dashed var(--primary-blue); 
+            font-size: 1.1em; 
+            line-height: 1.5; 
+            min-height: 200px;
+            overflow-x: auto;
+        }
+        .action-area {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .action-btn { 
+            display: inline-block; 
+            margin-top: 20px; 
+            padding: 10px 20px; 
+            background-color: #333; 
+            color: white; 
+            border-radius: 6px; 
+            text-decoration: none; 
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .action-btn:hover {
+             background-color: #555;
+        }
+        .copy-btn {
+            background-color: var(--secondary-green);
+        }
+        .copy-btn:hover {
+            background-color: #319e61;
+        }
+        .cprf-section {
+            background-color: #fff;
+            border-left: 5px solid var(--primary-color);
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        .cprf-section strong {
+            color: var(--primary-color);
+            margin-right: 5px;
+        }
+
+        pre#final-prompt {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            font-family: 'Consolas', 'Monaco', monospace;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="page-title">✨ Final Generated AI Prompt</h1>
+
+        <div id="original-inputs-details">
+            </div>
+        
+        <h3>📝 Your Translated English Prompt:</h3>
+        <pre id="final-prompt">Awaiting translated result from server...</pre>
+        
+        <div class="action-area">
+            <button class="action-btn copy-btn" onclick="copyPrompt()">
+                📋 Copy Final Prompt
+            </button>
+            <a id="back-link" href="index.html" class="action-btn">
+                ← Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    
+    <script src="result.js"></script>
+</body>
+</html>

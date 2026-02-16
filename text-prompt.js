@@ -96,13 +96,51 @@ generatePromptBtn.addEventListener("click", async (event) => {
 
 // --- NEW SECURE Netlify Function Call using fetch ---
 // --- Ensure this is the version used in your frontend JS files ---
+// async function translateText(text) {
+//     if (!text) return "";
+
+//     // This points to the file we created in Step 3.
+//     // Netlify automatically serves files in /netlify/functions/ at this URL path.
+//     const endpoint = "/.netlify/functions/gemini-translate";
+
+//     console.log("Sending to Gemini backend...");
+
+//     try {
+//         const response = await fetch(endpoint, {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json"
+//             },
+//             // Sending the combined Burmese text
+//             body: JSON.stringify({ prompt: text })
+//         });
+
+//         if (!response.ok) {
+//             // Try to get error details from the backend
+//             const errorData = await response.json().catch(() => ({ error: response.statusText }));
+//             throw new Error(errorData.error || `Server error: ${response.status}`);
+//         }
+
+//         const data = await response.json();
+
+//         if (data.final_prompt_en) {
+//             console.log("Gemini Translation successful!");
+//             // Return the clean English prompt
+//             return data.final_prompt_en;
+//         } else {
+//             throw new Error("Invalid response format from translation server.");
+//         }
+//     } catch (error) {
+//         console.error("Translation failed:", error);
+//         // Re-throw the error so the button click handler sees it and shows the "X Failed" message
+//         throw error; 
+//     }
+// }
+
 async function translateText(text) {
     if (!text) return "";
 
-    // This points to the file we created in Step 3.
-    // Netlify automatically serves files in /netlify/functions/ at this URL path.
     const endpoint = "/.netlify/functions/gemini-translate";
-
     console.log("Sending to Gemini backend...");
 
     try {
@@ -111,28 +149,25 @@ async function translateText(text) {
             headers: {
                 "Content-Type": "application/json"
             },
-            // Sending the combined Burmese text
-            body: JSON.stringify({ prompt: text })
+            // CHANGE 'prompt' TO 'text' HERE
+            body: JSON.stringify({ text: text }) 
         });
 
         if (!response.ok) {
-            // Try to get error details from the backend
             const errorData = await response.json().catch(() => ({ error: response.statusText }));
             throw new Error(errorData.error || `Server error: ${response.status}`);
         }
 
         const data = await response.json();
 
+        // Ensure this matches the key returned by your function (final_prompt_en)
         if (data.final_prompt_en) {
-            console.log("Gemini Translation successful!");
-            // Return the clean English prompt
             return data.final_prompt_en;
         } else {
             throw new Error("Invalid response format from translation server.");
         }
     } catch (error) {
         console.error("Translation failed:", error);
-        // Re-throw the error so the button click handler sees it and shows the "X Failed" message
         throw error; 
     }
 }

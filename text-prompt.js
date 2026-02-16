@@ -137,11 +137,11 @@ generatePromptBtn.addEventListener("click", async (event) => {
 //     }
 // }
 
+// Inside your text-prompt.js file
 async function translateText(text) {
     if (!text) return "";
 
     const endpoint = "/.netlify/functions/gemini-translate";
-    console.log("Sending to Gemini backend...");
 
     try {
         const response = await fetch(endpoint, {
@@ -149,8 +149,8 @@ async function translateText(text) {
             headers: {
                 "Content-Type": "application/json"
             },
-            // CHANGE 'prompt' TO 'text' HERE
-            body: JSON.stringify({ text: text }) 
+            // CHANGE THIS LINE TO MATCH THE BACKEND exactly
+            body: JSON.stringify({ text_to_translate: text }) 
         });
 
         if (!response.ok) {
@@ -160,7 +160,7 @@ async function translateText(text) {
 
         const data = await response.json();
 
-        // Ensure this matches the key returned by your function (final_prompt_en)
+        // The backend returns { final_prompt_en: ... } so this is correct
         if (data.final_prompt_en) {
             return data.final_prompt_en;
         } else {

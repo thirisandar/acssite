@@ -20,8 +20,8 @@ exports.handler = async (event, context) => {
     // 2. Initialize Gemini
     const genAI = new GoogleGenerativeAI(apiKey);
     // Use 'gemini-pro' or the model you have access to
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        
     // 3. Get the Burmese text from the frontend request
     const requestBody = JSON.parse(event.body);
     const burmeseTextToTranslate = requestBody.text_to_translate;

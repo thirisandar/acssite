@@ -116,7 +116,7 @@ exports.handler = async (event, context) => {
         "X-Title": "ACS Translation Service"
       },
       body: JSON.stringify({
-        "model": "google/gemini-2.0-flash-exp:free", // အခမဲ့သုံးနိုင်သော Gemini Model ID
+        "model": "google/gemini-2.0-flash-001", // အခမဲ့သုံးနိုင်သော Gemini Model ID
         "messages": [
           {
             "role": "system",
@@ -134,7 +134,8 @@ exports.handler = async (event, context) => {
     const data = await response.json();
 
     if (data.error) {
-        throw new Error(data.error.message || "OpenRouter API Error");
+      console.error("OpenRouter detailed error:", data.error);
+      throw new Error(`OpenRouter Error: ${data.error.message} (Code: ${data.error.code})`);
     }
 
     // 4. ပြန်လာသော data ထဲမှ ဘာသာပြန်စာသားကို ထုတ်ယူခြင်း

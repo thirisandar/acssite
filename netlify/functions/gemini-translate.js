@@ -73,89 +73,93 @@
 
 
 // File: netlify/functions/gemini-translate.js
-
 exports.handler = async (event, context) => {
-  // POST request တစ်ခုတည်းကိုသာ ခွင့်ပြုမည်
+  // CORS Preflight handling
+  if (event.httpMethod === "OPTIONS") {
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+      },
+      body: ""
+    };
+  }
+
   if (event.httpMethod !== "POST") {
     return { 
       statusCode: 405, 
-      body: JSON.stringify({ error: "Method Not Allowed. Please use POST." }),
-      headers: { 
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Headers": "Content-Type",
-          "Access-Control-Allow-Methods": "POST, OPTIONS"
-      }
-  };
+      body: JSON.stringify({ error: "Method Not Allowed" }),
+      headers: { "Access-Control-Allow-Origin": "*" }
+    };
   }
 
   try {
-    // 1. Netlify Environment Variables ထဲရှိ Key ကို ရယူခြင်း
-    // (မှတ်ချက်- Netlify တွင် OPENROUTER_API_KEY အမည်ဖြင့် အသစ်သိမ်းထားရန် လိုအပ်သည်)
     const apiKey = process.env.OPENROUTER_API_KEY;
+    if (!apiKey) throw new Error("API Key missing.");
 
-    if (!apiKey) {
-        console.error("OpenRouter API Key not found in environment variables");
-        throw new Error("Server configuration error (API Key missing).");
-    }
-
-    // 2. Frontend မှ ပေးပို့လိုက်သော မြန်မာစာသားကို ရယူခြင်း
     const requestBody = JSON.parse(event.body);
     const burmeseTextToTranslate = requestBody.text_to_translate;
 
-    if (!burmeseTextToTranslate) {
-      throw new Error("No text provided for translation.");
-    }
+    if (!burmeseTextToTranslate) throw new Error("No text provided.");
 
-    // 3. OpenRouter API သို့ Request ပို့ခြင်း
+    // --- ဤနေရာသည် အဓိက Update လုပ်ရမည့် အပိုင်းဖြစ်သည် ---
+    const systemPrompt = `
+    You are a professional AI Prompt Engineer and Translator.
+    
+    CRITICAL RULES:
+    1. If the input contains "Image Style:", "Video Style:", or "[STRICT RULE]", it is a GENERATION PROMPT. 
+       - Output ONLY a single descriptive English paragraph.
+       - NEVER provide advice, guides, "Do's and Don'ts", or conversation.
+       - Focus on visual details, camera movements, and lighting.
+    
+    2. If the input is a general question or text request (e.g., "How to invest..."):
+       - Provide a well-structured English guide or article.
+    
+    3. ALWAYS output ONLY the English result. No introductory text like "Here is the translation".
+    4. Remove all markdown bold symbols (**) from the output.
+    `;
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "https://your-portfolio-url.com", // Option: သင့် website link ထည့်နိုင်သည်
-        "X-Title": "ACS Translation Service"
       },
       body: JSON.stringify({
-        "model": "google/gemini-2.0-flash-001", // အခမဲ့သုံးနိုင်သော Gemini Model ID
+        "model": "google/gemini-2.0-flash-001",
         "messages": [
-          {
-            "role": "system",
-            "content": "You are an expert professional translator. Output ONLY the final English translation without any conversational filler."
-          },
-          {
-            "role": "user",
-            "content": burmeseTextToTranslate
-          }
+          { "role": "system", "content": systemPrompt },
+          { "role": "user", "content": burmeseTextToTranslate }
         ],
         "temperature": 0.3 
       })
     });
 
     const data = await response.json();
+    if (data.error) throw new Error(data.error.message);
 
-    if (data.error) {
-      console.error("OpenRouter detailed error:", data.error);
-      throw new Error(`OpenRouter Error: ${data.error.message} (Code: ${data.error.code})`);
-    }
+    let translatedText = data.choices[0].message.content;
+    
+    // Clean up any stray markdown stars
+    translatedText = translatedText.replace(/\*/g, '').trim();
 
-    // 4. ပြန်လာသော data ထဲမှ ဘာသာပြန်စာသားကို ထုတ်ယူခြင်း
-    const translatedText = data.choices[0].message.content;
-
-    // 5. ရလဒ်ကို Frontend သို့ ပြန်လည်ပေးပို့ခြင်း
     return {
       statusCode: 200,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*", 
       },
-      body: JSON.stringify({ final_prompt_en: translatedText.trim() }),
+      body: JSON.stringify({ final_prompt_en: translatedText }),
     };
 
   } catch (error) {
     console.error("Translation Error:", error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: error.message || "Failed to translate via OpenRouter." }),
+      headers: { "Access-Control-Allow-Origin": "*" },
+      body: JSON.stringify({ error: error.message }),
     };
   }
 };

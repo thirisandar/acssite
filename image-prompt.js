@@ -232,9 +232,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // AI အတွက် ပိုမိုတိကျသော Prompt ညွှန်ကြားချက်
             // ဤနေရာတွင် System instruction သဖွယ် ပေါင်းစပ်ပေးလိုက်ပါသည်
-            const instruction = `Generate a high-quality English image generation prompt based on these Burmese inputs:
-            Style: ${style_mm}, Subject: ${subject_mm}, Action: ${action_mm}, Environment: ${environment_mm}, Lighting: ${lighting_mm}.
-            Make it descriptive, artistic, and suitable for Midjourney or DALL-E. Output ONLY the English prompt.`;
+            const instruction = `
+            [STRICT RULE: OUTPUT ONLY THE IMAGE PROMPT. NO ADVICE. NO CONVERSATION. NO EXPLANATIONS.]
+            
+            Task: Convert these Burmese visual elements into a high-quality, descriptive English image prompt for Midjourney/DALL-E:
+            - Style: ${style_mm}
+            - Subject: ${subject_mm}
+            - Action: ${action_mm}
+            - Environment: ${environment_mm}
+            - Lighting: ${lighting_mm}
+            
+            Requirements: Combine these into a single, cohesive, artistic paragraph. Use professional art keywords (e.g., hyper-realistic, 8k, photorealistic, intricate details). Output ONLY the English paragraph.
+            `;
 
             generatePromptBtn.textContent = 'Creating Artistic Prompt...';
             generatePromptBtn.disabled = true;

@@ -243,9 +243,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // AI အတွက် Video Specific Instruction
             // ဤနေရာတွင် AI ကို Video Model များနားလည်အောင် Prompt ထုတ်ခိုင်းပါသည်
-            const videoInstruction = `Create a cinematic AI video generation prompt based on these details:
-            Style: ${style_mm}, Subject: ${subject_mm}, Action: ${action_mm}, Environment: ${environment_mm}, Lighting: ${lighting_mm}, Camera Motion: ${camera_mm}, Sound/Audio: ${audio_mm}.
-            Ensure the output is a single, fluent English paragraph suitable for high-end AI video tools like Sora or Runway. Output ONLY the English prompt.`;
+            const videoInstruction = `
+            [STRICT RULE: OUTPUT ONLY THE VIDEO GENERATION PROMPT. NO INTRO, NO ADVICE, NO TIPS.]
+
+            Task: Create a highly detailed, cinematic English video prompt based on these Burmese inputs:
+            - Style: ${style_mm}
+            - Subject: ${subject_mm}
+            - Action: ${action_mm}
+            - Environment: ${environment_mm}
+            - Lighting: ${lighting_mm}
+            - Camera Motion: ${camera_mm}
+            - Audio/Sound Context: ${audio_mm}
+
+            Instructions: 
+            Combine these into a single, professional English paragraph (approx 60-100 words). 
+            Focus on visual movement, textures, and cinematic atmosphere. 
+            Use technical terms like "4k resolution", "highly detailed", "photorealistic", and "fluid motion".
+            Output ONLY the English paragraph.
+            `;
 
             generatePromptBtn.textContent = '🎬 Generating Cinematic Prompt...';
             generatePromptBtn.disabled = true;

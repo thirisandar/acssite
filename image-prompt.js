@@ -250,9 +250,9 @@ document.addEventListener("DOMContentLoaded", () => {
             generatePromptBtn.disabled = true;
 
             try {
-                const final_prompt_en = await translateText(instruction);
+                let final_prompt_en = await translateText(instruction);
                 final_prompt_en = final_prompt_en.replace(/\*/g, '').trim();
-                
+
                 const dataToSave = {
                     success: true,
                     source: 'image', 

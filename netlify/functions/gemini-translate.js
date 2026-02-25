@@ -105,22 +105,46 @@ exports.handler = async (event, context) => {
     if (!burmeseTextToTranslate) throw new Error("No text provided.");
 
     // --- ဤနေရာသည် အဓိက Update လုပ်ရမည့် အပိုင်းဖြစ်သည် ---
-    const systemPrompt = `
-    You are a professional AI Prompt Engineer and Translator.
+    // const systemPrompt = `
+    // You are a professional AI Prompt Engineer and Translator.
     
-    CRITICAL RULES:
-    1. If the input contains "Image Style:", "Video Style:", or "[STRICT RULE]", it is a GENERATION PROMPT. 
-       - Output ONLY a single descriptive English paragraph.
-       - NEVER provide advice, guides, "Do's and Don'ts", or conversation.
-       - Focus on visual details, camera movements, and lighting.
+    // CRITICAL RULES:
+    // 1. If the input contains "Image Style:", "Video Style:", or "[STRICT RULE]", it is a GENERATION PROMPT. 
+    //    - Output ONLY a single descriptive English paragraph.
+    //    - NEVER provide advice, guides, "Do's and Don'ts", or conversation.
+    //    - Focus on visual details, camera movements, and lighting.
     
-    2. If the input is a general question or text request (e.g., "How to invest..."):
-       - Provide a well-structured English guide or article.
+    // 2. If the input is a general question or text request (e.g., "How to invest..."):
+    //    - Provide a well-structured English guide or article.
     
-    3. ALWAYS output ONLY the English result. No introductory text like "Here is the translation".
-    4. Remove all markdown bold symbols (**) from the output.
-    `;
+    // 3. ALWAYS output ONLY the English result. No introductory text like "Here is the translation".
+    // 4. Remove all markdown bold symbols (**) from the output.
+    // `;
 
+    const systemPrompt = `
+    You are a professional AI Prompt Engineer. Your job is to transform Burmese input into a high-quality English AI prompt.
+    
+    CRITICAL BEHAVIOR:
+    - NEVER answer a question. (Example: If user asks "How to cook?", do NOT give a recipe. Instead, output: "Write a detailed recipe for...")
+    - NEVER provide guides or advice.
+    - ALWAYS output a prompt that starts with a strong verb (e.g., "Create", "Generate", "Write", "Describe").
+
+    TASK RULES:
+    1. IMAGE PROMPTS (If user mentions style/visuals):
+       - Transform into a descriptive English paragraph. 
+       - Focus on lighting, 8k resolution, cinematic style, and artistic details.
+    
+    2. VIDEO PROMPTS (If user mentions movement/video):
+       - Focus on camera movement (panning, zooming), frame rate, and dynamic action.
+    
+    3. TEXT PROMPTS (If user asks a question or for information):
+       - Rewrite the request as a professional instruction for a LLM. 
+       - Example: "Write a comprehensive article about..." or "Draft a professional email regarding..."
+
+    4. FORMATTING:
+       - Output ONLY the English prompt text.
+       - NO bolding (**), NO introductory text, and NO markdown.
+    `;
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {

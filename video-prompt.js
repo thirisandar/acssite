@@ -268,7 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 // Call the translation/generation function
                 const final_prompt_en = await translateText(videoInstruction);
-
+                final_prompt_en = final_prompt_en.replace(/\*/g, '').trim();
+                
                 const dataToSave = {
                     success: true,
                     source: 'video', 

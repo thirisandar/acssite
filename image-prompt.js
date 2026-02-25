@@ -219,11 +219,11 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.removeItem('promptData');
 
             // SSAEL Inputs ရယူခြင်း
-            const style_mm = document.getElementById("style-main").value;
-            const subject_mm = document.getElementById("subject-main").value;
-            const action_mm = document.getElementById("action-main").value;
-            const environment_mm = document.getElementById("environment-main").value;
-            const lighting_mm = document.getElementById("lighting-main").value;
+            const style_mm = document.getElementById("style-main").value.trim();
+            const subject_mm = document.getElementById("subject-main").value.trim();
+            const action_mm = document.getElementById("action-main").value.trim();
+            const environment_mm = document.getElementById("environment-main").value.trim();
+            const lighting_mm = document.getElementById("lighting-main").value.trim();
 
             if(!subject_mm) {
                 alert("Please at least enter a Subject!");
@@ -233,24 +233,26 @@ document.addEventListener("DOMContentLoaded", () => {
             // AI အတွက် ပိုမိုတိကျသော Prompt ညွှန်ကြားချက်
             // ဤနေရာတွင် System instruction သဖွယ် ပေါင်းစပ်ပေးလိုက်ပါသည်
             const instruction = `
-            [STRICT RULE: OUTPUT ONLY THE IMAGE PROMPT. NO ADVICE. NO CONVERSATION. NO EXPLANATIONS.]
-            
-            Task: Convert these Burmese visual elements into a high-quality, descriptive English image prompt for Midjourney/DALL-E:
-            - Style: ${style_mm}
-            - Subject: ${subject_mm}
-            - Action: ${action_mm}
-            - Environment: ${environment_mm}
-            - Lighting: ${lighting_mm}
-            
-            Requirements: Combine these into a single, cohesive, artistic paragraph. Use professional art keywords (e.g., hyper-realistic, 8k, photorealistic, intricate details). Output ONLY the English paragraph.
-            `;
+                [STRICT RULE: OUTPUT ONLY A DESCRIPTIVE ENGLISH IMAGE PROMPT paragraph.]
+                [DO NOT provide advice, DO NOT explain, DO NOT use markdown bold **.]
 
+                Task: Create a high-quality visual prompt for an AI image generator based on these Burmese details:
+                - Style: ${style_mm}
+                - Subject: ${subject_mm}
+                - Action: ${action_mm}
+                - Environment: ${environment_mm}
+                - Lighting: ${lighting_mm}
+                
+                Instruction: Combine these into one single, fluent, artistic English paragraph. Use professional artistic keywords like "8k resolution, cinematic lighting, photorealistic, intricate textures." 
+                Output ONLY the English text.
+            `;
             generatePromptBtn.textContent = 'Creating Artistic Prompt...';
             generatePromptBtn.disabled = true;
 
             try {
                 const final_prompt_en = await translateText(instruction);
-
+                final_prompt_en = final_prompt_en.replace(/\*/g, '').trim();
+                
                 const dataToSave = {
                     success: true,
                     source: 'image', 

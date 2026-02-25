@@ -51,9 +51,19 @@ generatePromptBtn.addEventListener("click", async (event) => {
     const result_mm = document.getElementById("result-main").value;
     const format_mm = document.getElementById("format-main").value;
     
-    // Combine all inputs into a single string for translation
-    const fullBurmesePrompt = `${context_mm}${persona_mm}${result_mm}${format_mm}`;
+    // Check if at least one field is filled
+    if (!context_mm && !persona_mm && !result_mm && !format_mm) {
+        alert("Please enter some text first!");
+        return;
+    }
 
+    // Combine all inputs into a single string for translation
+    const fullBurmesePrompt = `
+            Context: ${context_mm}
+            Persona: ${persona_mm}
+            Expected Result: ${result_mm}
+            Format Style: ${format_mm}
+        `.trim();
     // Display a loading message
     generatePromptBtn.textContent = 'Translating and Generating...';
     generatePromptBtn.disabled = true;
@@ -94,50 +104,6 @@ generatePromptBtn.addEventListener("click", async (event) => {
 });
 }
 
-// --- NEW SECURE Netlify Function Call using fetch ---
-// --- Ensure this is the version used in your frontend JS files ---
-// async function translateText(text) {
-//     if (!text) return "";
-
-//     // This points to the file we created in Step 3.
-//     // Netlify automatically serves files in /netlify/functions/ at this URL path.
-//     const endpoint = "/.netlify/functions/gemini-translate";
-
-//     console.log("Sending to Gemini backend...");
-
-//     try {
-//         const response = await fetch(endpoint, {
-//             method: "POST",
-//             headers: {
-//                 "Content-Type": "application/json"
-//             },
-//             // Sending the combined Burmese text
-//             body: JSON.stringify({ prompt: text })
-//         });
-
-//         if (!response.ok) {
-//             // Try to get error details from the backend
-//             const errorData = await response.json().catch(() => ({ error: response.statusText }));
-//             throw new Error(errorData.error || `Server error: ${response.status}`);
-//         }
-
-//         const data = await response.json();
-
-//         if (data.final_prompt_en) {
-//             console.log("Gemini Translation successful!");
-//             // Return the clean English prompt
-//             return data.final_prompt_en;
-//         } else {
-//             throw new Error("Invalid response format from translation server.");
-//         }
-//     } catch (error) {
-//         console.error("Translation failed:", error);
-//         // Re-throw the error so the button click handler sees it and shows the "X Failed" message
-//         throw error; 
-//     }
-// }
-
-// Inside your text-prompt.js file
 async function translateText(text) {
     if (!text) return "";
 

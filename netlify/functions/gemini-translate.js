@@ -145,7 +145,9 @@ exports.handler = async (event, context) => {
     4. FORMATTING:
        - Output ONLY the English prompt.
        - NO bolding (**), NO introductory text, NO "Here is your prompt."
-`;
+    `;
+
+    
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {

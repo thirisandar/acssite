@@ -17,19 +17,43 @@
 
         /* 1. Header Styling */
         header {
-            background-color: #007BFF;
+            display: flex;
+            align-items: center;
+            background-color: #000;
             color: white;
             padding: 20px 0;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        header h1 {
+        header h2 {
             margin: 0;
-            font-size: 2.5em;
+            font-size: 2em;
         }
 
-        /* 2. Main Content / Description Styling */
+        header img{
+            width: 100px;
+            height: 100px;
+            margin-right: 15rem;;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column; /* Stack logo on top of text */
+                text-align: center;
+                padding: 20px 10px;
+            }
+
+            header img {
+                margin-right: 0; /* Remove that large 15rem margin */
+                width: 70px;
+            }
+
+            header h2 {
+                font-size: 1.2rem; /* Scale down text for small screens */
+            }
+        }
+
         .main-content {
             padding: 20px 20px;
             max-width: 800px;
@@ -301,6 +325,7 @@ footer ul li a:hover {
 <body>
 
     <header>
+        <img src="acslogo.jpg" />
         <h2>Prompt Master (မြန်မာ) (သို့မဟုတ်) AI စကားပြန်</h2>
     </header>
 
@@ -347,7 +372,7 @@ footer ul li a:hover {
                 <p>
                     Contact us at 
                     <i class="fas fa-envelope"><a href="mailto:acs.consult.mm@gmail.com" target="_blank">acs.consult.mm@gmail.com</a> </i>
-                    <i class="fas fa-phone">+95 9 981 022 455.</i> 
+                    <i class="fas fa-phone">+95 9 444 024 658.</i> 
                 </p>
             </div>
     
